@@ -2,9 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Tasks</title>
+    <link href="../src/css/output.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
+<body class="bg-[#d1f7ff] min-h-screen flex flex-col items-center py-12 px-4 font-sans">
 
+<div class="w-full max-w-4xl">
+    <div class="flex justify-between items-start mb-10">
+        <h1 class="text-5xl font-extrabold text-black tracking-tight">Task List</h1>
+        <button id="addBtn" class="bg-[#5a189a] hover:bg-[#480ca8] text-white px-8 py-3 rounded-2xl font-bold shadow-md transition-all active:scale-95">
+            Add Task
+        </button>
+    </div>
+
+    <div class="bg-white rounded-[40px] shadow-sm py-6 px-12 mb-6 grid grid-cols-4 text-2xl font-black italic">
+        <div class="text-[#80e5ff]">Task</div>
+        <div class="text-[#80e5ff] text-center">Priority</div>
+        <div class="text-[#80e5ff] text-center">Status</div>
+        <div class="text-[#ffb703] text-right">Action</div>
+    </div>
+
+    <div id="taskList" class="space-y-4">
+    </div>
+</div>
+<div id="modalOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50">
+    <div class="bg-white w-[550px] rounded-[40px] p-10 shadow-2xl relative">
+        <button onclick="toggleModal()" class="absolute top-8 right-8 text-black hover:scale-110 cursor-pointer">
+            <i data-lucide="x" size="28"></i>
+        </button>
+
+        <h2 class="text-4xl font-black mb-8">Add Task</h2>
+
+        <div class="mb-6">
+            <label class="block text-xl font-bold mb-3">Task</label>
+            <input type="text" id="taskNameInput" placeholder="Web Homework"
+                   class="w-full border-2 border-cyan-400 rounded-2xl py-4 px-6 text-lg outline-none focus:border-purple-700">
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-xl font-bold mb-3">Priority</label>
+            <div class="flex gap-3">
+                <button onclick="setModalPriority('High', 'text-red-600', this)" class="priority-btn border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-6 py-2 rounded-2xl font-bold cursor-pointer">High</button>
+                <button onclick="setModalPriority('Medium', 'text-orange-400', this)" class="priority-btn border-2 border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white px-6 py-2 rounded-2xl font-bold cursor-pointer bg-orange-50">Medium</button>
+                <button onclick="setModalPriority('Low', 'text-green-500', this)" class="priority-btn border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white px-6 py-2 rounded-2xl font-bold cursor-pointer">Low</button>
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <label class="block text-xl font-bold mb-3">Status</label>
+            <div class="flex gap-3">
+                <button onclick="setModalStatus('To Do', this)" class="status-btn border-2 border-cyan-400 text-cyan-400 px-6 py-2 rounded-2xl font-bold cursor-pointer">To Do</button>
+                <button onclick="setModalStatus('Progress', this)" class="status-btn border-2 border-cyan-400 text-cyan-400 px-6 py-2 rounded-2xl font-bold cursor-pointer bg-cyan-50">Progress</button>
+                <button onclick="setModalStatus('Done', this)" class="status-btn border-2 border-cyan-400 text-cyan-400 px-6 py-2 rounded-2xl font-bold cursor-pointer">Done</button>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button onclick="saveTaskFromModal()" class="bg-[#5a189a] text-white px-14 py-3 rounded-2xl font-bold text-xl hover:bg-[#480ca8] active:scale-95 transition-all cursor-pointer">Add</button>
+        </div>
+    </div>
+</div>
+
+<div id="deleteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-[100]">
+    <div class="bg-white w-[500px] rounded-[40px] p-12 shadow-2xl text-center">
+        <h2 class="text-4xl font-black text-red-600 mb-8">Are you sure ?</h2>
+
+        <div class="flex justify-center mb-10">
+            <div class="bg-red-50 p-6 rounded-3xl border-2 border-red-100">
+                <i data-lucide="alert-triangle" class="text-red-600" size="80"></i>
+            </div>
+        </div>
+
+        <div class="flex justify-center gap-8">
+            <button onclick="confirmDelete()" class="bg-red-500 hover:bg-red-600 text-white px-12 py-3 rounded-2xl font-bold text-2xl transition-all active:scale-95 cursor-pointer">
+                Yes
+            </button>
+            <button onclick="toggleDeleteModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-12 py-3 rounded-2xl font-bold text-2xl transition-all active:scale-95 cursor-pointer">
+                No
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="updateModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50">
+    <div class="bg-white w-[500px] rounded-[40px] p-10 shadow-2xl relative">
+        <button onclick="toggleUpdateModal()" class="absolute top-8 right-8 text-black hover:scale-110">
+            <i data-lucide="x" size="28"></i>
+        </button>
+
+        <h2 class="text-4xl font-black mb-8">Update Task</h2>
+
+        <div class="mb-6">
+            <label class="block text-xl font-bold mb-3">Task</label>
+            <input type="text" id="updateTaskInput" class="w-full border-2 border-cyan-400 rounded-2xl py-4 px-6 text-lg outline-none focus:border-purple-600">
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-xl font-bold mb-3">Priority</label>
+            <div class="flex gap-3">
+                <button onclick="setUpdatePriority('High', 'text-red-600', this)" class="update-priority-btn border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-6 py-2 rounded-2xl font-bold">High</button>
+                <button onclick="setUpdatePriority('Medium', 'text-orange-400', this)" class="update-priority-btn border-2 border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white px-6 py-2 rounded-2xl font-bold">Medium</button>
+                <button onclick="setUpdatePriority('Low', 'text-green-500', this)" class="update-priority-btn border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white px-6 py-2 rounded-2xl font-bold">Low</button>
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <label class="block text-xl font-bold mb-3">Status</label>
+            <div class="flex gap-3">
+                <button onclick="setUpdateStatus('To Do', this)" class="update-status-btn border-2 border-cyan-400 text-cyan-400 px-6 py-2 rounded-2xl font-bold">To Do</button>
+                <button onclick="setUpdateStatus('Progress', this)" class="update-status-btn border-2 border-cyan-400 text-cyan-400 px-6 py-2 rounded-2xl font-bold">Progress</button>
+                <button onclick="setUpdateStatus('Done', this)" class="update-status-btn border-2 border-cyan-400 text-cyan-400 px-6 py-2 rounded-2xl font-bold">Done</button>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-4">
+            <button onclick="toggleUpdateModal()" class="bg-red-500 text-white px-8 py-3 rounded-2xl font-bold text-xl">Cancel</button>
+            <button onclick="saveUpdate()" class="bg-[#5a189a] text-white px-10 py-3 rounded-2xl font-bold text-xl">Update</button>
+        </div>
+    </div>
+</div>
+
+<script src="../src/js/index.js"></script>
 </body>
 </html>

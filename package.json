@@ -1,0 +1,25 @@
+{
+  "name": "11_nem_sophal_pvh_web_homework_004",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx @tailwindcss/cli -i ./src/css/input.css -o ./src/css/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nemsophal/11_Nem_Sophal_PVH_Web_Homework_004.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Nemsophal/11_Nem_Sophal_PVH_Web_Homework_004/issues"
+  },
+  "homepage": "https://github.com/Nemsophal/11_Nem_Sophal_PVH_Web_Homework_004#readme",
+  "devDependencies": {
+    "tailwindcss": "^4.2.1"
+  }
+}
